@@ -17,7 +17,7 @@ module NumberService =
                 
                 // [ for i in 1 .. 100 do yield printNums i ] |> ignore
                 
-                let printNums = (fun x ->  logger.Log(LogLevel.Information, "{0}", (int)x)   )
+                let printNums = (fun x -> logger.Log(LogLevel.Information, "{0}", (int)x))
 
                 [1..100] |> List.map printNums |> ignore
             } :> Task

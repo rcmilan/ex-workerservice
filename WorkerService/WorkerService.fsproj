@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Compile Include="Services\WorkerSample1.fs" />
+    <Compile Include="Services\WorkerSample2.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   
