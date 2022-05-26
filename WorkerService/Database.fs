@@ -3,7 +3,7 @@
 open Microsoft.Data.Sqlite
 open FSharp.Data.Dapper
 
-module Connection =
+module private DbConnection =
 
     let private buildConnectionString (dataSource:string) =
         sprintf "Data Source = %s;" dataSource
@@ -12,7 +12,7 @@ module Connection =
 
 module Queries =
 
-    let private connection () = Connection.SqliteConnection (Connection.OnDisk())
+    let private connection () = Connection.SqliteConnection (DbConnection.OnDisk())
 
     let querySeqAsync<'T>    = querySeqAsync<'T> (connection)
     let querySingleAsync<'T> = querySingleOptionAsync<'T> (connection)
@@ -20,8 +20,7 @@ module Queries =
     module Schema =
         let CreateTables = querySingleAsync<int> {
             script """
-                DROP TABLE IF EXISTS Person;
-                CREATE TABLE Person (
+                CREATE TABLE IF NOT EXISTS Person (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     Name VARCHAR(255) NOT NULL,
                     Contact VARCHAR(255) NULL
@@ -32,7 +31,7 @@ module Queries =
     module Person =
         let New name contact = querySingleAsync<int> {
             script """INSERT INTO Person (Name, Contact) VALUES (@Name, @Contact)"""
-            parameters (dict["Name", box name; "Contact", box contact])
+            parameters (dict ["Name", box name; "Contact", box contact])
         }
 
         let GetSingleByName name = querySingleAsync<Types.Person> {
